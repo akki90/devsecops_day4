@@ -1,0 +1,12 @@
+name: myfirstapp workflow
+on: [push]
+jobs:
+  unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Install NPM
+        run: npm install
+      - name: Run the test case
+        run: npm test
