@@ -1,6 +1,7 @@
 name: myfirstapp workflow
 on: [push]
 jobs:
+
   unit-testing:
     runs-on: ubuntu-latest
     steps:
@@ -11,3 +12,28 @@ jobs:
       - name: Run the test case
         run: npm test
         continue-on-error: true
+
+  oast-retire:
+    runs-on: ubuntu-latest
+    needs: unit-testing
+    steps:
+      - name: Clone the repository
+        uses: actions/checkout@v2
+
+      - name: Install Retire.JS
+        run: npm install -g retire
+
+      - name: Install Node Modules
+        run: npm install
+
+      - name: run Retire.JS Scan
+        run: | 
+          retire --outputformat json --outputpath retire-output.json
+        continue-on-error: true
+
+      - name: Upload the Retire.JS Output file
+        uses: actions/upload-artifact@v2
+        with:
+          name: RetireJS-Output-File
+          path: retire-output.json
+        if: always()
